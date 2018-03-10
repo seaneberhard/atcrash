@@ -7,4 +7,4 @@ def life_after_death():
     print('Hello from the afterlife!')
 
 
-os.exit(0)
+os._exit(0)

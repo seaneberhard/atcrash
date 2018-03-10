@@ -4,9 +4,7 @@ import multiprocessing as mp
 
 
 def child_process(func, *args, **kwargs):
-    p = mp.Process(target=func, args=args, kwargs=kwargs)
-    p.start()
-    print(p.pid)
+    mp.Process(target=func, args=args, kwargs=kwargs).start()
     return func
 
 
@@ -25,7 +23,10 @@ def atcrash(func, *args, **kwargs):
 
     @orphan_process
     def func_at_crash():
-        psutil.Process(parent_pid).wait()
+        try:
+            psutil.Process(parent_pid).wait()
+        except psutil._exceptions.NoSuchProcess:
+            pass  # original process must already be finished!
         func(*args, **kwargs)
 
     return func
