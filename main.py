@@ -19,14 +19,11 @@ def orphan_process(func, *args, **kwargs):
 
 
 def atcrash(func, *args, **kwargs):
-    parent_pid = os.getpid()
+    main_process = psutil.Process(os.getpid())
 
     @orphan_process
     def func_at_crash():
-        try:
-            psutil.Process(parent_pid).wait()
-        except psutil._exceptions.NoSuchProcess:
-            pass  # original process must already be finished!
+        main_process.wait()
         func(*args, **kwargs)
 
     return func
